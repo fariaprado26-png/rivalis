@@ -4,7 +4,7 @@ const path = require('node:path');
 const crypto = require('node:crypto');
 
 const port = Number(process.env.PORT) || 3000;
-const adminToken = process.env.ADMIN_TOKEN || 'troque-esta-chave';
+const adminToken = process.env.INTERCLASSES_ADMIN_KEY || 'troque-esta-chave';
 const publicDirectory = __dirname;
 const dataDirectory = path.join(__dirname, 'data');
 const dataFile = path.join(dataDirectory, 'championship.json');

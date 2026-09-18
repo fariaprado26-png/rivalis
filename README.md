@@ -6,7 +6,7 @@
 2. No terminal, entre nesta pasta e execute:
 
 ```powershell
-$env:ADMIN_TOKEN="uma-chave-secreta"
+$env:INTERCLASSES_ADMIN_KEY="uma-chave-secreta"
 npm start
 ```
 
@@ -15,7 +15,7 @@ npm start
 
 O placar público é somente leitura. O painel usa `GET /api/championship` para consultar os dados e exige o cabeçalho `x-admin-token` para criar, editar, remover ou restaurar eventos. Os dados ficam no servidor em `data/championship.json`.
 
-Em produção, defina `ADMIN_TOKEN` no ambiente da hospedagem e use HTTPS. Não publique a chave no código-fonte.
+Em produção, defina `INTERCLASSES_ADMIN_KEY` no ambiente da hospedagem e use HTTPS. Não publique a chave no código-fonte.
 
 ## Publicar no Netlify
 
@@ -25,7 +25,7 @@ Em produção, defina `ADMIN_TOKEN` no ambiente da hospedagem e use HTTPS. Não 
 	- **Build command:** deixe vazio.
 	- **Publish directory:** `.`
 	- **Functions directory:** `netlify/functions`.
-4. Em **Site configuration > Environment variables**, adicione `ADMIN_TOKEN` com uma chave longa e secreta.
+4. Em **Site configuration > Environment variables**, adicione `INTERCLASSES_ADMIN_KEY` com uma chave longa e secreta.
 5. Faça um novo deploy e abra `https://seu-site.netlify.app/admin.html` para administrar.
 
 O arquivo `netlify.toml` já configura a Function e encaminha `/api/*` para ela. Em produção, os dados são armazenados no Netlify Blobs, não no arquivo local. Para testar o ambiente Netlify localmente, instale a CLI e rode `npm install` e `npm run dev:netlify`.
