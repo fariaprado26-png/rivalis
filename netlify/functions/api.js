@@ -24,7 +24,7 @@ function json(statusCode, body) {
 }
 
 function isAuthorized(event) {
-  const expectedToken = process.env.ADMIN_TOKEN || '';
+  const expectedToken = process.env.INTERCLASSES_ADMIN_KEY || '';
   const providedToken = event.headers['x-admin-token'] || event.headers['X-Admin-Token'] || '';
   return Boolean(expectedToken) && providedToken.length === expectedToken.length && crypto.timingSafeEqual(Buffer.from(providedToken), Buffer.from(expectedToken));
 }
@@ -67,7 +67,7 @@ exports.handler = async (event) => {
     if (event.httpMethod === 'GET' && route === '/championship') return json(200, await readData());
     if (event.httpMethod === 'POST' && route === '/admin/login') {
       const body = JSON.parse(event.body || '{}');
-      return json(body.token === process.env.ADMIN_TOKEN ? 200 : 401, { authenticated: body.token === process.env.ADMIN_TOKEN });
+      return json(body.token === process.env.INTERCLASSES_ADMIN_KEY ? 200 : 401, { authenticated: body.token === process.env.INTERCLASSES_ADMIN_KEY });
     }
     if (!isAuthorized(event)) return json(401, { error: 'Chave administrativa inválida.' });
 
