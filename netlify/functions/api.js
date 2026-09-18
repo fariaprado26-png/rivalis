@@ -5,7 +5,13 @@ const initialData = require('../../data/championship.initial.json');
 let dataStore;
 
 function getDataStore() {
-  if (!dataStore) dataStore = getStore({ name: 'interclasses', consistency: 'strong' });
+  if (!dataStore) {
+    try {
+      dataStore = getStore('interclasses');
+    } catch {
+      return null;
+    }
+  }
   return dataStore;
 }
 
@@ -24,11 +30,19 @@ function isAuthorized(event) {
 }
 
 async function readData() {
-  return (await getDataStore().get('championship', { type: 'json' })) || structuredClone(initialData);
+  const store = getDataStore();
+  if (!store) return structuredClone(initialData);
+  try {
+    return (await store.get('championship', { type: 'json' })) || structuredClone(initialData);
+  } catch {
+    return structuredClone(initialData);
+  }
 }
 
 async function writeData(data) {
-  await getDataStore().setJSON('championship', data);
+  const store = getDataStore();
+  if (!store) throw new Error('Netlify Blobs ainda não está configurado neste site.');
+  await store.setJSON('championship', data);
   return data;
 }
 
