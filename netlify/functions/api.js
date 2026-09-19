@@ -1,4 +1,31 @@
-const crypto = require('node:crypto');
+const initialData = require('../../data/championship.initial.json');
+let data = initialData;
+
+function response(statusCode, body) {
+  return { statusCode, headers: { 'Content-Type': 'application/json; charset=utf-8' }, body: JSON.stringify(body) };
+}
+
+function authorized(event) {
+  return Boolean(process.env.INTERCLASSES_ADMIN_KEY) && event.headers['x-admin-token'] === process.env.INTERCLASSES_ADMIN_KEY;
+}
+
+exports.handler = async (event) => {
+  const route = event.path.replace(/^\/\.netlify\/functions\/api/, '').replace(/^\/api/, '').replace(/\/$/, '') || '/championship';
+  if (event.httpMethod === 'GET' && route === '/championship') return response(200, data);
+  if (event.httpMethod === 'POST' && route === '/admin/login') {
+    const body = JSON.parse(event.body || '{}');
+    const ok = body.token === process.env.INTERCLASSES_ADMIN_KEY;
+    return response(ok ? 200 : 401, { authenticated: ok });
+  }
+  if (!authorized(event)) return response(401, { error: 'Chave administrativa inválida.' });
+  if (event.httpMethod === 'POST' && route === '/categories') {
+    const input = JSON.parse(event.body || '{}');
+    const category = { ...input, id: input.id || 'evento-' + Date.now(), icon: input.icon || String(data.categories.length + 1).padStart(2, '0'), red: Number(input.red) || 0, blue: Number(input.blue) || 0 };
+    data = { ...data, categories: [...data.categories, category] };
+    return response(201, category);
+  }
+  return response(404, { error: 'Rota não encontrada.' });
+};const crypto = require('node:crypto');
 const { getStore } = require('@netlify/blobs');
 
 const initialData = require('../../data/championship.initial.json');
