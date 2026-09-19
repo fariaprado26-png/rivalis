@@ -1,4 +1,3 @@
-
 const crypto = require('node:crypto');
 const { getStore } = require('@netlify/blobs');
 
@@ -26,7 +25,7 @@ function json(statusCode, body) {
 
 function isAuthorized(event) {
   const expectedToken = process.env.INTERCLASSES_ADMIN_KEY || '';
-  const providedToken = event.headers['x-INTERCLASSES_ADMIN_KEY'] || event.headers['X-INTERCLASSES_ADMIN_KEY'] || '';
+  const providedToken = event.headers['x-admin-token'] || event.headers['X-Admin-Token'] || '';
   return Boolean(expectedToken) && providedToken.length === expectedToken.length && crypto.timingSafeEqual(Buffer.from(providedToken), Buffer.from(expectedToken));
 }
 
@@ -39,6 +38,7 @@ async function readData() {
     return structuredClone(initialData);
   }
 }
+
 
 async function writeData(data) {
   const store = getDataStore();
